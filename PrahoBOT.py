@@ -22,10 +22,10 @@ def chatbot(message):
 
 
 def main():
-    print("Hello! I'm your chatbot. You can start chatting. Type 'bye' to exit.")
+    print("Hello! I'm PrahoBot. You can start chatting. Type 'goodbye' to exit the chat.")
     while True:
         user_input = input("You: ")
-        if user_input.lower() == "bye":
+        if user_input.lower() == "goodbye":
             print(chatbot("bye"))
             break
         else:
