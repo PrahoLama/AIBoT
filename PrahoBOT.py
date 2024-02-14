@@ -1,64 +1,36 @@
-import re
-import raspunsuri_lungi as long
+import random
 
 
-def message_probability(user_message, recognised_words, single_response=False, required_words=[]):
-    message_certainty = 0
-    has_required_words = True
+responses = {
+    "hi": ["Hello!", "Hi there!", "Hey!"],
+    "how are you?": ["I'm good, thank you!", "Feeling great, thanks!"],
+    "what's your name?": ["I'm just a simple chatbot.", "You can call me Chatbot!"],
+    "bye": ["Goodbye!", "See you later!", "Bye!"],
+    "default": ["I'm not sure what you mean.", "Could you please rephrase that?", "Sorry, I didn't catch that."],
+}
 
 
-    for word in user_message:
-            message_certainty += 1
+def chatbot(message):
 
-    # Calculeaza procentajul de cuvinte recunoscute
-    percentage = float(message_certainty) / float(len(recognised_words))
+    message = message.lower()
 
-    # Verifica daca cuvintele recunoscute sunt in string
-    for word in required_words:
-        if word not in user_message:
-            has_required_words = False
-            break
 
-    # Trebuie sa aiba cuvintele obligatorii sau sa ofere un raspuns simplu
-    if has_required_words or single_response:
-        return int(percentage * 100)
+    if message in responses:
+        return random.choice(responses[message])
     else:
-        return 0
+        return random.choice(responses["default"])
 
 
-def check_all_messages(message):
-    highest_prob_list = {}
-
-    # Simplifies response creation / adds it to the dict
-    def response(bot_response, list_of_words, single_response=False, required_words=[]):
-        nonlocal highest_prob_list
-        highest_prob_list[bot_response] = message_probability(message, list_of_words, single_response, required_words)
-
-    # Responses -------------------------------------------------------------------------------------------------------
-    response('Hello!', ['hello', 'hi', 'hey', 'sup', 'heyo'], required_words=['hello', 'hi', 'hey', 'sup', 'heyo'])
-
-    response('I\'m doing fine, and you?', ['how', 'are', 'you', 'doing'], required_words=['how'])
-    response('I am a bot and I cannot love!', ['i', 'love','you'], required_words=['i', 'love','you'])
-    response('Pulapula!', ['tell', 'joke'], required_words=['tell','joke'])
-
-    # Longer responses
-    response(long.R_ADVICE, ['give', 'advice'], required_words=['advice'])
-    response(long.R_EATING, ['what', 'you', 'eat'], required_words=['you', 'eat'])
-    
-    best_match = max(highest_prob_list, key=highest_prob_list.get)
-    # print(highest_prob_list)
-    # print(f'Best match = {best_match} | Score: {highest_prob_list[best_match]}')
-
-    return long.unknown() if highest_prob_list[best_match] < 1 else best_match
+def main():
+    print("Hello! I'm your chatbot. You can start chatting. Type 'bye' to exit.")
+    while True:
+        user_input = input("You: ")
+        if user_input.lower() == "bye":
+            print(chatbot("bye"))
+            break
+        else:
+            print("Chatbot:", chatbot(user_input))
 
 
-# Used to get the response
-def get_response(user_input):
-    split_message = re.split(r'\s+|[,;?!.-]\s*', user_input.lower())
-    response = check_all_messages(split_message)
-    return response
-
-
-# Testing the response system
-while True:
-    print('PrahoBot: ' + get_response(input('You: ')))
+if __name__ == "__main__":
+    main()
